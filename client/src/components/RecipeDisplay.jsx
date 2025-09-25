@@ -78,7 +78,11 @@ export function RecipeDisplay({ recipe, onCopy }) {
     const hasStructure = ingredients.length || steps.length || nutrition.length;
 
     function formatStep(text) {
-        return text.replace(/^\d+[.)]\s*/, "").trim();
+        return text
+            .replace(/^\d+[.)]\s*/, "")          // remove leading numbering
+            .replace(/\*\*(.*?)\*\*/g, "$1")     // strip **bold**
+            .replace(/__(.*?)__/g, "$1")         // strip __bold__
+            .trim();
     }
 
     return (
