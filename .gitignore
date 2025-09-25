@@ -1,0 +1,12 @@
+#this is the .gitignore file for a Node.js project
+node_modules/
+dist/
+.env
+.DS_Store
+npm-debug.log
+yarn-error.log
+coverage/
+.idea/
+.vscode/
+*.log
+*.tsbuildinfo
