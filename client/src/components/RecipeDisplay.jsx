@@ -19,6 +19,6 @@ function mdToHTML(md) {
         .replace(/\*\*(.*?)\*\*/gim, "<b>$1</b>")
         .replace(/\*(.*?)\*/gim, "<i>$1</i>")
         .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\n\- (.*)/g, "<ul><li>$1</li></ul>")
+        .replace(/\n- (.*)/g, "<ul><li>$1</li></ul>")
         .replace(/\n/g, "<br>");
 }
