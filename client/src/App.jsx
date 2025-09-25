@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { generateRecipe } from "./api";
 import { IngredientInput } from "./components/IngredientInput.jsx";
 import { StyleSelect } from "./components/StyleSelect.jsx";
 import { RecipeDisplay } from "./components/RecipeDisplay.jsx";
 import { Loader } from "./components/Loader.jsx";
+import "./styles/enhanced.css";
 
 const STYLES = [
     { key: "ramsay", label: "Gordon Ramsay" },
@@ -14,7 +15,6 @@ const STYLES = [
     { key: "mediterranean", label: "Mediterranean" },
     { key: "minimalist", label: "Minimalist" }
 ];
-
 export default function App() {
     const [ingredients, setIngredients] = useState("");
     const [style, setStyle] = useState("ramsay");
@@ -70,6 +70,97 @@ export default function App() {
                 recipe={recipe}
                 onCopy={() => recipe && navigator.clipboard.writeText(recipe)}
             />
+        <div className="app-shell">
+            <header className="app-header" aria-label="Cook Smart">
+                <div className="brand">
+                    <div className="logo-mark" role="img" aria-label="Cook Smart logo">🍲</div>
+                    <div className="brand-text">
+                        <h1 className="brand-title">
+                            <span className="brand-primary">Cook</span>
+                            <span className="brand-secondary">Smart</span>
+                        </h1>
+                        <p className="tagline">AI Recipe Generator</p>
+                    </div>
+                </div>
+            </header>
+
+            <main className="app-main app-main--split">
+                <section className="panel panel-form">
+                    <form onSubmit={submit} className="recipe-form">
+                        <div className="field">
+                            <label className="field-label">Ingredients</label>
+                            <IngredientInput value={ingredients} onChange={setIngredients} />
+                            <p className="hint">Comma or line separated (e.g. chicken, lemon, garlic).</p>
+                        </div>
+                        <div className="field row">
+                            <label className="field-label">Style</label>
+                            <StyleSelect value={style} onChange={setStyle} styles={STYLES} />
+                        </div>
+                        <div className="actions">
+                            <button className="btn primary" disabled={loading}>
+                                {loading ? "Working..." : "Generate"}
+                            </button>
+                            <button
+                                type="button"
+                                className="btn ghost"
+                                onClick={reset}
+                                disabled={loading}
+                            >
+                                Reset
+                            </button>
+                        </div>
+                        {error && <div className="alert error">{error}</div>}
+                        {loading && <div className="loader-wrap"><Loader /></div>}
+                    </form>
+                </section>
+
+                <section className="panel panel-output">
+                    <div className="panel-header">
+                        <h2>Result</h2>
+                        <div className="panel-tools">
+                            <button
+                                className="btn small"
+                                disabled={!recipe}
+                                onClick={() => navigator.clipboard.writeText(recipe)}
+                            >
+                                Copy
+                            </button>
+                            <button
+                                className="btn small"
+                                disabled={!recipe}
+                                onClick={() => {
+                                    const blob = new Blob([recipe], { type: "text/plain" });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement("a");
+                                    a.href = url;
+                                    a.download = "recipe.txt";
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+                                }}
+                            >
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                    <div className={`output-surface ${!recipe && !loading ? "empty" : ""}`}>
+                        {recipe ? (
+                            <RecipeDisplay
+                                recipe={recipe}
+                                onCopy={() => navigator.clipboard.writeText(recipe)}
+                            />
+                        ) : !loading && (
+                            <div className="placeholder">
+                                <p>✨ Your generated recipe will appear here.</p>
+                                <p className="muted">Add ingredients and choose a style.</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            </main>
+
+            <footer className="app-footer">
+                <span>h_AI_ck Day 2025</span>
+            </footer>
         </div>
     );
 }
