@@ -37,7 +37,7 @@ export default function App() {
     }
     return (
         <div className="shell">
-            <h1>Recipe Generator</h1>
+            <h1>Recipe Generator - Cook Smart</h1>
             <form onSubmit={submit} className="panel">
                 <IngredientInput value={ingredients} onChange={setIngredients} />
                 <div className="row">
