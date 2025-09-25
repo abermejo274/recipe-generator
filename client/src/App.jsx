@@ -195,7 +195,7 @@ export default function App() {
             </main>
 
             <footer className="app-footer">
-                <span>Sailthru h_AI_ck Day 2025</span>
+                <span>h_AI_ck Day 2025</span>
             </footer>
         </div>
     );

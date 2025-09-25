@@ -3,12 +3,20 @@ import React, { useMemo } from "react";
 import "../styles/enhanced.css";
 
 // --- helpers --------------------------------------------------
+function stripMdFormatting(str = "") {
+    return str
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/__(.*?)__/g, "$1")
+        .trim();
+}
+
 function extractSection(lines, headerRegex) {
-    const idx = lines.findIndex(l => headerRegex.test(l));
+    const idx = lines.findIndex(l => headerRegex.test(stripMdFormatting(l)));
     if (idx === -1) return { index: -1, items: [] };
     const items = [];
     for (let i = idx + 1; i < lines.length; i++) {
-        const line = lines[i];
+        const rawLine = lines[i];
+        const line = stripMdFormatting(rawLine);
         if (!line.trim()) break;
         if (/^#{1,6}\s+\w+/i.test(line)) break;
         if (/^(ingredients?|steps?|directions?|method|nutrition)/i.test(line.replace(/^#{1,6}\s*/, ""))) break;
@@ -27,20 +35,32 @@ function parseRecipe(raw) {
     if (!raw) return { title: "", ingredients: [], steps: [], nutrition: [], raw: "" };
     const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
-    const title = lines[0]?.startsWith("#")
-        ? lines[0].replace(/^#+\s*/, "")
-        : (!/^ingredients?/i.test(lines[0]) ? lines[0] : "");
+    const first = stripMdFormatting(lines[0] || "");
+    const title = first.startsWith("#")
+        ? stripMdFormatting(first.replace(/^#+\s*/, ""))
+        : (!/^ingredients?/i.test(first) ? first : "");
 
-    const ingredientsSec = extractSection(lines, /^(#{1,6}\s*)?ingredients?\b/i);
-    const stepsSec = extractSection(lines, /^(#{1,6}\s*)?(steps?|instructions|directions|method)\b/i);
-    const nutritionSec = extractSection(lines, /^(#{1,6}\s*)?nutrition facts?\s*\(?.*per.*serving.*\)?/i);
+    const ingredientsSec = extractSection(lines, /^(#{1,6}\s*)?\**ingredients?\**\b/i);
+    const stepsSec = extractSection(lines, /^(#{1,6}\s*)?\**(steps?|instructions|directions|method)\**\b/i);
+    const nutritionSec = extractSection(
+        lines,
+        /^(#{1,6}\s*)?\**nutrition facts?\**\s*\(?.*per.*serving.*\)?/i
+    );
 
-    const ingredients = cleanList(ingredientsSec.items);
-    const steps = cleanList(stepsSec.items);
+    const ingredients = cleanList(ingredientsSec.items).map(stripMdFormatting);
+    const steps = cleanList(stepsSec.items).map(stripMdFormatting);
+
     const nutrition = cleanList(nutritionSec.items)
         .map(line => {
-            const m = line.match(/^([^:\-]+)[:\-]\s*(.+)$/) || line.match(/^(.+?)\s{1,}([\d].*)$/);
-            return m ? { label: m[1].trim(), value: m[2].trim() } : null;
+            const m =
+                line.match(/^([^:\-]+)[:\-]\s*(.+)$/) ||
+                line.match(/^(.+?)\s{1,}([\d].*)$/);
+            return m
+                ? {
+                    label: stripMdFormatting(m[1].trim()),
+                    value: stripMdFormatting(m[2].trim())
+                }
+                : null;
         })
         .filter(Boolean);
 
@@ -58,7 +78,7 @@ function NutritionFacts({ nutrition }) {
         >
             <div className="nutrition-block__head">
                 <span className="nutrition-emoji" aria-hidden="true">🧪</span>
-                <h5>Nutrition Facts (per serving)</h5>
+                <h5>{stripMdFormatting("Nutrition Facts (per serving)")}</h5>
             </div>
             <ul className="nutrition-list">
                 {nutrition.map(n => (
@@ -78,11 +98,11 @@ export function RecipeDisplay({ recipe, onCopy }) {
     const hasStructure = ingredients.length || steps.length || nutrition.length;
 
     function formatStep(text) {
-        return text
-            .replace(/^\d+[.)]\s*/, "")          // remove leading numbering
-            .replace(/\*\*(.*?)\*\*/g, "$1")     // strip **bold**
-            .replace(/__(.*?)__/g, "$1")         // strip __bold__
-            .trim();
+        return stripMdFormatting(
+            text
+                .replace(/^\d+[.)]\s*/, "")
+                .trim()
+        );
     }
 
     return (
