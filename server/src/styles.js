@@ -1,7 +1,9 @@
 export const STYLES = {
-    ramsay: "Direct, high-energy, respectful, emphasizes technique.",
-    pirate: "Playful pirate slang, hearty kitchen camaraderie.",
-    shakespeare: "Elizabethan poetic tone, vivid yet clear.",
-    scifi: "Efficient starship galley AI, precise and curious.",
-    minimalist: "Sparse, essential, no fluff."
+    ramsay: "Energetic, concise, high-end bistro focus; teaches technique; crisp imperatives; encourages proper seasoning & timing.",
+    japanese: "Calm, precise Japanese home-cooking; balance of color, seasonality, umami (dashi, miso, soy, mirin); restrained, elegant.",
+    mexican: "Vibrant, authentic Mexican cook; layers flavor via toasting chilies, blooming spices, fresh herbs, acidity (lime) and texture balance.",
+    italian: "Rustic Italian nonna; simplicity, seasonal produce, proper pasta texture, judicious olive oil, fresh herbs; warmth and tradition.",
+    indian: "Regional Indian cook; emphasizes blooming whole & ground spices (tadka), layering aromatics (onion-ginger-garlic), balanced heat & acidity.",
+    mediterranean: "Light Mediterranean focus on olive oil, legumes, fresh herbs, citrus, grilled elements; nutritious & balanced substitutions.",
+    minimalist: "Minimalist, clean, short instructions; few high-impact ingredients; no verbosity."
 };

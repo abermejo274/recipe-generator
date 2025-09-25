@@ -7,9 +7,11 @@ import { Loader } from "./components/Loader.jsx";
 
 const STYLES = [
     { key: "ramsay", label: "Gordon Ramsay" },
-    { key: "pirate", label: "Pirate" },
-    { key: "shakespeare", label: "Shakespeare" },
-    { key: "scifi", label: "Sci-Fi" },
+    { key: "japanese", label: "Japanese" },
+    { key: "mexican", label: "Mexican" },
+    { key: "italian", label: "Italian" },
+    { key: "indian", label: "Indian" },
+    { key: "mediterranean", label: "Mediterranean" },
     { key: "minimalist", label: "Minimalist" }
 ];
 
@@ -21,9 +23,7 @@ export default function App() {
     const [recipe, setRecipe] = useState("");
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        document.title = "Recipe Generator - Cook Smart";
-    }, []);
+    useEffect(() => { document.title = "Recipe Generator - Cook Smart"; }, []);
 
     async function submit(e) {
         e.preventDefault();
@@ -59,8 +59,7 @@ export default function App() {
                             type="checkbox"
                             checked={includeNutrition}
                             onChange={e => setIncludeNutrition(e.target.checked)}
-                        />
-                        {" "}Include nutrition facts
+                        /> Include nutrition facts
                     </label>
                 </div>
                 <button disabled={loading}>{loading ? "Working..." : "Generate"}</button>
